@@ -12,6 +12,7 @@ import org.junit.runners.model.Statement;
 import se.krka.kahlua.integration.LuaReturn;
 import se.krka.kahlua.vm.KahluaTableIterator;
 import se.krka.kahlua.stdlib.BaseLib;
+import se.krka.kahlua.vm.KahluaUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -141,7 +142,7 @@ public class KahluaRunner extends BlockJUnit4ClassRunner {
         while(it.advance()) {
             Object value = it.getValue();
             String name = it.getKey().toString();
-            String valueType = BaseLib.type(value);
+            String valueType = KahluaUtil.type(value);
 
             boolean foundMatch = (name.startsWith(TEST_PREFIX)
                                     || name.equals(LUA_BEFORE_FUNCTION)

@@ -2,10 +2,11 @@ package no.simensan.kahluatest.vm;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.krka.kahlua.converter.KahluaConverterManager;
 import se.krka.kahlua.converter.KahluaEnumConverter;
+import se.krka.kahlua.converter.KahluaNumberConverter;
 import se.krka.kahlua.converter.KahluaTableConverter;
-import se.krka.kahlua.converter.LuaConverterManager;
-import se.krka.kahlua.converter.LuaNumberConverter;
+
 import se.krka.kahlua.integration.LuaCaller;
 import se.krka.kahlua.integration.LuaReturn;
 import se.krka.kahlua.integration.expose.LuaJavaClassExposer;
@@ -20,12 +21,11 @@ import se.krka.kahlua.vm.Platform;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.List;
 
 public class KahluaVm {
     private static final Logger logger = LoggerFactory.getLogger(KahluaVm.class);
 
-    protected LuaConverterManager luaConverterManager;
+    protected KahluaConverterManager luaConverterManager;
 	protected LuaCaller luaCaller;
 	protected KahluaThread kahluaThread;
 	protected Platform javaPlatform;
@@ -39,8 +39,8 @@ public class KahluaVm {
 		kahluaEnvironment = javaPlatform.newEnvironment();
 		LuaCompiler.register(kahluaEnvironment);
 
-		luaConverterManager = new LuaConverterManager();
-		LuaNumberConverter.install(luaConverterManager);
+		luaConverterManager = new KahluaConverterManager();
+		KahluaNumberConverter.install(luaConverterManager);
 		new KahluaTableConverter(javaPlatform).install(luaConverterManager);
 		KahluaEnumConverter.install(luaConverterManager);
 
