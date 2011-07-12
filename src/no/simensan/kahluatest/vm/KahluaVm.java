@@ -23,19 +23,19 @@ import java.io.IOException;
 import java.io.Reader;
 
 public class KahluaVm {
-    private static final Logger logger = LoggerFactory.getLogger(KahluaVm.class);
+	private static final Logger logger = LoggerFactory.getLogger(KahluaVm.class);
 
-    protected KahluaConverterManager luaConverterManager;
+	protected KahluaConverterManager luaConverterManager;
 	protected LuaCaller luaCaller;
 	protected KahluaThread kahluaThread;
 	protected Platform javaPlatform;
 	protected KahluaTable kahluaEnvironment;
 	protected LuaJavaClassExposer luaJavaClassExposer;
-    protected LuaSourceProvider luaSourceProvider;
+	protected LuaSourceProvider luaSourceProvider;
 
-    public KahluaVm() {
-        luaSourceProvider = new LuaSourceProviderImpl();
-        javaPlatform = new J2SEPlatform();
+	public KahluaVm() {
+		luaSourceProvider = new LuaSourceProviderImpl();
+		javaPlatform = new J2SEPlatform();
 		kahluaEnvironment = javaPlatform.newEnvironment();
 		LuaCompiler.register(kahluaEnvironment);
 
@@ -44,37 +44,37 @@ public class KahluaVm {
 		new KahluaTableConverter(javaPlatform).install(luaConverterManager);
 		KahluaEnumConverter.install(luaConverterManager);
 
-        luaCaller = new LuaCaller(luaConverterManager);
+		luaCaller = new LuaCaller(luaConverterManager);
 		luaJavaClassExposer = new LuaJavaClassExposer(luaConverterManager, javaPlatform, kahluaEnvironment);
 		kahluaThread = new KahluaThread(javaPlatform, kahluaEnvironment);
-        new Require(luaSourceProvider).install(kahluaEnvironment);
-    }
+		new Require(luaSourceProvider).install(kahluaEnvironment);
+	}
 
-    public LuaReturn loadLuaFromFile(String luaFile) {
-        LuaClosure luaClosure;
-        try {
+	public LuaReturn loadLuaFromFile(String luaFile) {
+		LuaClosure luaClosure;
+		try {
 			Reader source = luaSourceProvider.getLuaSource(luaFile);
 			if (source == null) {
 				throw new RuntimeException("Could not find lua source file: " + luaFile);
 			}
 			luaClosure = LuaCompiler.loadis(source, luaFile, kahluaEnvironment);
 		} catch (IOException e) {
-            e.printStackTrace();
+			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 
-        return luaCall(luaClosure);
-    }
+		return luaCall(luaClosure);
+	}
 
-    public LuaReturn luaCall(Object functionObject, Object... args) {
-        return luaCaller.protectedCall(kahluaThread, functionObject, args);
-    }
+	public LuaReturn luaCall(Object functionObject, Object... args) {
+		return luaCaller.protectedCall(kahluaThread, functionObject, args);
+	}
 
-    public KahluaTable getEnvironment() {
-        return kahluaEnvironment;
-    }
+	public KahluaTable getEnvironment() {
+		return kahluaEnvironment;
+	}
 
-    public LuaJavaClassExposer getLuaJavaClassExposer() {
-        return luaJavaClassExposer;
-    }
+	public LuaJavaClassExposer getLuaJavaClassExposer() {
+		return luaJavaClassExposer;
+	}
 }
